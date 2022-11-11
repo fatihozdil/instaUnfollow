@@ -38,7 +38,7 @@ class InstaBot:
     def unfollow(self):
         # Go to your Instagram profile page
         self.browser.get("https://www.instagram.com/{}/".format(self.username))
-        sleep(5)
+        sleep(2)
 
         # Get the usernames of all your followers
         followers, num_of_followers = self.get_followers()
@@ -83,13 +83,23 @@ class InstaBot:
 
         # followee - followers
         not_follows_back = usernames_of_followees.difference(followers)
+        # Using readlines()
+        ignored_accounts_from_file = set()
+        file1 = open('ignored_accounts.txt', 'r')
+        Lines = file1.readlines()
+        for line in Lines:
+            ignored_accounts_from_file.add(line.strip())
+        not_follows_back = not_follows_back.difference(
+            ignored_accounts_from_file)
 
-        print("hit return if you want to unfollow the user or type 'n' if you don't")
+        print("hit return if you want to unfollow the user or type '3' if you don't")
         for non_follower in not_follows_back:
             print(non_follower)
             value = input("unfollow?").capitalize().strip()
 
-            if (value == "N"):
+            if (value == "3"):
+                f = open("ignored_accounts.txt", "a")
+                f.write("{}\n".format(non_follower))
                 continue
 
             self.browser.get(
@@ -135,7 +145,7 @@ class HomePage:
                 By.XPATH, "//button[normalize-space()='Confirm']")
             verification_button.click()
 
-        sleep(2)
+        sleep(5)
 
 
 # Credentials to access Instagram account
